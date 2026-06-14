@@ -4,7 +4,6 @@ import com.readstat.DAOs.UserDAO;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines the logic for how to mark/unmark a book as read
  * Revision Date: 7/21/2025
  */

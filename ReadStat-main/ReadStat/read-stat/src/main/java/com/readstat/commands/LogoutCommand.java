@@ -4,7 +4,6 @@ import com.readstat.POJOs.User;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines the logic for how to attempt to logout a user
  * Revision Date: 7/15/2025
  */

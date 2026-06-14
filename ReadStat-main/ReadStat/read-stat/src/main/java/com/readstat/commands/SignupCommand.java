@@ -5,7 +5,6 @@ import com.readstat.POJOs.User;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines the logic for how to attempt to sign up a user
  * Revision Date: 7/12/2025
  */

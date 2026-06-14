@@ -8,9 +8,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Sets up and maintains the application's connection to the database
- * Revision Date: 7/10/2025
+ * Revision Date: 06.14.2026
  */
 
 public class DBConnection {

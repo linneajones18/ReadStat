@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines what the user sees when the login page is open
  * Revision Date: 7/22/2025
  */

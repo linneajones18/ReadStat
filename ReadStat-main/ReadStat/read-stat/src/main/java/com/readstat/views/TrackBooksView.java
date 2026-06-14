@@ -17,7 +17,6 @@ import com.readstat.records.Book;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines what the user sees when the book tracking page is open
  * Revision Date: 7/23/2025
  */

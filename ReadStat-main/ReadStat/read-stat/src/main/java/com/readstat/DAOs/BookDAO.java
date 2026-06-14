@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Communicates with the book and book_to_genre database and translates data into an understandable java form
  * Revision Date: 7/23/2025
  */

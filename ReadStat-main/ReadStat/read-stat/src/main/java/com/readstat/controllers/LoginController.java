@@ -7,7 +7,6 @@ import com.readstat.views.ViewManager;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Define the operation logic for what to do when the user interacts with the login view
  * Revision Date: 7/15/2025
  */

@@ -18,7 +18,6 @@ import com.readstat.views.ViewManager;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines the operation logic for what to do when the user interacts with the statistics page
  * Revision Date: 7/23/2025
  */

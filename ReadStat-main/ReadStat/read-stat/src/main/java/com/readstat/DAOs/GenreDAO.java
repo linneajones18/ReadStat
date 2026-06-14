@@ -9,7 +9,6 @@ import com.readstat.model.DBConnection;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Communicates with the genre database and translates data into an understandable java form
  * Revision Date: 7/15/2025
  */

@@ -2,7 +2,6 @@ package com.readstat.POJOs;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Stores the information of the user
  * Revision Date: 7/22/2025
  */

@@ -13,7 +13,6 @@ import javax.swing.Timer;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines the main traits of the app frame and opens and closes views as called
  * Revision Date: 7/22/2025
  */

@@ -17,7 +17,6 @@ import org.jfree.chart.JFreeChart;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Defines what the user sees when the statistics page is open
  * Revision Date: 7/23/2025
  */

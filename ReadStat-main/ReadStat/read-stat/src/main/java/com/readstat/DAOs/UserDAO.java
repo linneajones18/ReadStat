@@ -12,7 +12,6 @@ import com.readstat.records.*;
 
 /*
  * Author:        Linnea Jones
- * Class:         CSCI 4448
  * Purpose:       Communicates with the User and user_to_books_read databases and translates data into an understandable java form
  * Revision Date: 7/23/2025
  */
