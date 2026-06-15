@@ -1,4 +1,4 @@
-package com.readstat.records;
+package com.readstat.POJOs;
 
 /*
  * Author:        Linnea Jones

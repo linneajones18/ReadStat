@@ -13,7 +13,7 @@ import java.awt.event.ComponentAdapter;
 import javax.swing.*;
 
 import com.readstat.DAOs.*;
-import com.readstat.records.Book;
+import com.readstat.POJOs.Book;
 
 /*
  * Author:        Linnea Jones

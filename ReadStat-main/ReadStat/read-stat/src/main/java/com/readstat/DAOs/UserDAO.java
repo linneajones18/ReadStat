@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import com.readstat.POJOs.*;
 import com.readstat.model.DBConnection;
-import com.readstat.records.*;
 
 /*
  * Author:        Linnea Jones
@@ -48,6 +47,8 @@ public class UserDAO {
         return false;
     }
 
+
+    // TODO: create session relationship
     // marks a book as read by the user by writing it to the database
     public boolean trackBookByID(int id) {
         String query = "INSERT INTO user_to_books_read (user_id, book_id) VALUES ('" + User.getUser().getUsername() + "', " + id + ");";
@@ -60,6 +61,7 @@ public class UserDAO {
         return false;
     }
 
+    // TODO: remove session relationship
     // marks a book as unread by the user by removing the read record from the databse
     public boolean unTrackBookByID(int id) {
         String query = "DELETE FROM user_to_books_read WHERE user_id = '" + User.getUser().getUsername() + "' AND book_id = " + id + ";";
@@ -72,6 +74,7 @@ public class UserDAO {
         return false;
     }
 
+    // TODO: change to just checking session records - for improved latency
     // verifies whether a record exists in the database of the user reading a given book by id
     public boolean userHasReadBook(int book_id) {
         String query = "SELECT COUNT(*) AS count FROM user_to_books_read WHERE user_id = '" + User.getUser().getUsername() + "' AND book_id = " + book_id + ";";
@@ -85,6 +88,7 @@ public class UserDAO {
         return false;
     }
 
+    // TODO: change to just search session records - for improved latency
     // gets the number of books the user has read within a given page range from the database
     public int getReadCountByPageNumber(int min, int max) {
         String query = "SELECT COUNT(*) FROM user_to_books_read JOIN book ON book_id = book.id WHERE user_id = '" + User.getUser().getUsername() + "' AND pages BETWEEN " + min + " AND " + max + ";";
@@ -97,6 +101,7 @@ public class UserDAO {
         return -1;
     }
 
+    // TODO: change to checking via session records
     // returns the 5 authors the user has read the most of, and how many books per author
     public ArrayList<AuthorRecord> getTopAuthors() {
         ArrayList<AuthorRecord> authors = new ArrayList<>();
@@ -112,6 +117,8 @@ public class UserDAO {
         return authors;
     }
 
+
+    // TODO: change to checking via session records
     // returns the genres the user has read, and the quantity of books per genre
     public ArrayList<GenreRecord> getCommonGenres() {
         String query = "SELECT name, COUNT(*) AS count FROM user_to_books_read JOIN book ON user_to_books_read.book_id = book.id RIGHT JOIN book_to_genre ON book_to_genre.book_id = book.id LEFT JOIN genre ON genre_id = genre.id WHERE user_id = '" + User.getUser().getUsername() + "' GROUP BY name;";

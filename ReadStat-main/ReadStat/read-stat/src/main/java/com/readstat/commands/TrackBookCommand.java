@@ -8,6 +8,7 @@ import com.readstat.DAOs.UserDAO;
  * Revision Date: 7/21/2025
  */
 
+// TODO: implement session records when tracking books
 public class TrackBookCommand implements Command {
     public static boolean execute(int book_id) {
         UserDAO userDAO = new UserDAO();

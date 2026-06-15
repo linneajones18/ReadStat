@@ -11,8 +11,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import com.readstat.DAOs.UserDAO;
+import com.readstat.POJOs.AuthorRecord;
+import com.readstat.POJOs.GenreRecord;
 import com.readstat.commands.LogoutCommand;
-import com.readstat.records.*;
 import com.readstat.views.StatsView;
 import com.readstat.views.ViewManager;
 
