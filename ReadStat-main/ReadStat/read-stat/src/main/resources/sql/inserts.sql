@@ -1,3 +1,9 @@
+
+-- temporary until google books api is set up
+
+
+
+
 INSERT INTO genre (name) VALUES ('Art');
 INSERT INTO genre (name) VALUES ('Autobiography');
 INSERT INTO genre (name) VALUES ('Biography');
@@ -89,34 +95,31 @@ INSERT INTO book (title, pages, description) VALUES ('Flawless', 424, "descripti
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (5, 9);
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (5, 43);
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (5, 50);
-INSERT INTO author_to_book (book_id, author_id) VALUES (5, 1)
+INSERT INTO author_to_book (book_id, author_id) VALUES (5, 1);
 
 INSERT INTO book (title, pages, description) VALUES ('Taming 7', 460, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (6, 43);
-INSERT INTO author_to_book (book_id, author_id) VALUES (6, 2)
+INSERT INTO author_to_book (book_id, author_id) VALUES (6, 2);
 
 INSERT INTO book (title, pages, description) VALUES ('Redeeming 6', 766, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (7, 43);
-INSERT INTO author_to_book (book_id, author_id) VALUES (7, 2)
+INSERT INTO author_to_book (book_id, author_id) VALUES (7, 2);
 
 INSERT INTO book (title, pages, description) VALUES ('Saving 6', 512, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (8, 43);
-INSERT INTO author_to_book (book_id, author_id) VALUES (8, 2)
+INSERT INTO author_to_book (book_id, author_id) VALUES (8, 2);
 
 INSERT INTO book (title, pages, description) VALUES ('Keeping 13', 667, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (9, 43);
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (9, 50);
-INSERT INTO author_to_book (book_id, author_id) VALUES (9, 2)
+INSERT INTO author_to_book (book_id, author_id) VALUES (9, 2);
 
 INSERT INTO book (title, pages, description) VALUES ('Binding 13', 609, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (10, 43);
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (10, 50);
-INSERT INTO author_to_book (book_id, author_id) VALUES (10, 2)
+INSERT INTO author_to_book (book_id, author_id) VALUES (10, 2);
 
 INSERT INTO book (title, pages, description) VALUES ('Releasing 10', 768, "description goes here");
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (11, 43);
 INSERT INTO book_to_genre (book_id, genre_id) VALUES (11, 9);
-INSERT INTO author_to_book (book_id, author_id) VALUES (11, 2)
-
-
-
+INSERT INTO author_to_book (book_id, author_id) VALUES (11, 2);
