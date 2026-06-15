@@ -4,14 +4,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import com.readstat.DAOs.BookDAO;
-import com.readstat.commands.TrackBookCommand;
+import com.readstat.commands.MarkReadCommand;
 import com.readstat.views.TrackBooksView;
 import com.readstat.views.ViewManager;
 
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines the operation logic for what to do when the user interacts with the book tracking page
- * Revision Date: 7/23/2025
+ * Revision Date: 06/15/2026
  */
 
 // OBSERVER PATTERN
@@ -39,7 +39,7 @@ public class TrackBooksController {
     }
 
     public void handleTrackBook(int index) {
-        TrackBookCommand.execute(view.getVisibleBooks().get(index).ID());
+        MarkReadCommand.execute(view.getVisibleBooks().get(index).getID());
         view.switchButtonMode(index);
         view.refresh();
         refreshButtons();

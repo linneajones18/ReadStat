@@ -12,7 +12,7 @@ import com.readstat.model.DBConnection;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the User and user_to_books_read databases and translates data into an understandable java form
- * Revision Date: 7/23/2025
+ * Revision Date: 06/15/2026
  */
 
 public class UserDAO {
@@ -47,24 +47,62 @@ public class UserDAO {
         return false;
     }
 
+    // checks if book is marked as currently reading and returns session id, returns -1 if not
+    public int isCurReading(int id) {
+        String check_Reading = "SELECT session_id FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + id + " AND date_finished IS NULL;";
 
-    // TODO: create session relationship
-    // marks a book as read by the user by writing it to the database
-    public boolean trackBookByID(int id) {
-        String query = "INSERT INTO user_to_books_read (user_id, book_id) VALUES ('" + User.getUser().getUsername() + "', " + id + ");";
-        
-        try(PreparedStatement preparedStatement = con.prepareStatement(query);) {
+        try(PreparedStatement preparedStatement = con.prepareStatement(check_Reading)) {
+            ResultSet results = preparedStatement.executeQuery();
+            if(results.next()) {
+                return results.getInt("session_id");
+            }
+        } catch(SQLException e) { System.out.println("Error getting read genres."); }
+
+        return -1;
+    }
+
+    // marks a book as currently reading by creating a reading_session row with a start time but no end time in the DB
+    public boolean markBookAsCurReading(int id) {
+
+        if(isCurReading(id) != -1) { return false; }
+
+        String query = "INSERT INTO reading_session (username, book_id, date_started) VALUES (" + User.getUser().getUsername() + ", " + id + ", CURRENT_TIMESTAMP;";
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             int rows_affected = preparedStatement.executeUpdate();
             if(rows_affected == 1) { return true; }
-        } catch(SQLException e) { System.out.println("Problem marking book as read."); }
+        } catch(SQLException e) { System.out.println("Failed to mark book as currently reading.");}
 
         return false;
     }
 
-    // TODO: remove session relationship
-    // marks a book as unread by the user by removing the read record from the databse
+    public boolean markBookAsRead(int id) {
+
+        int session_id = isCurReading(id);
+
+        if(session_id != -1) {
+            // update existing session record to finished reading
+            String finished_reading = "UPDATE reading_session SET date_finished = CURRENT_TIMESTAMP WHERE session_id = " + session_id + ";";
+            try(PreparedStatement preparedStatement = con.prepareStatement(finished_reading);) {
+                int rows_affected = preparedStatement.executeUpdate();
+                if(rows_affected == 1) { return true; }
+            } catch(SQLException e) { System.out.println("Failed to change book status from currently reading to read.");}
+        }
+
+        else {
+            // create new record marked as finished
+            String mark_read = "INSERT INTO reading_session (username, book_id, date_finished) VALUES ('" + User.getUser().getUsername() + "', " + id + ", CURRENT_TIMESTAMP);";
+            try(PreparedStatement preparedStatement = con.prepareStatement(mark_read);) {
+                int rows_affected = preparedStatement.executeUpdate();
+                if(rows_affected == 1) { return true; }
+            } catch(SQLException e) { System.out.println("Failed to mark book as read.");}
+        }
+
+        return false;
+    }
+
+    // marks a book as unread by the user by removing every read record from the databse
     public boolean unTrackBookByID(int id) {
-        String query = "DELETE FROM user_to_books_read WHERE user_id = '" + User.getUser().getUsername() + "' AND book_id = " + id + ";";
+        String query = "DELETE FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + id + ";";
 
         try(PreparedStatement preparedStatement = con.prepareStatement(query);) {
             int rows_affected = preparedStatement.executeUpdate();
@@ -74,10 +112,9 @@ public class UserDAO {
         return false;
     }
 
-    // TODO: change to just checking session records - for improved latency
     // verifies whether a record exists in the database of the user reading a given book by id
     public boolean userHasReadBook(int book_id) {
-        String query = "SELECT COUNT(*) AS count FROM user_to_books_read WHERE user_id = '" + User.getUser().getUsername() + "' AND book_id = " + book_id + ";";
+        String query = "SELECT COUNT(*) AS count FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + book_id + ";";
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();
@@ -88,10 +125,9 @@ public class UserDAO {
         return false;
     }
 
-    // TODO: change to just search session records - for improved latency
     // gets the number of books the user has read within a given page range from the database
     public int getReadCountByPageNumber(int min, int max) {
-        String query = "SELECT COUNT(*) FROM user_to_books_read JOIN book ON book_id = book.id WHERE user_id = '" + User.getUser().getUsername() + "' AND pages BETWEEN " + min + " AND " + max + ";";
+        String query = "SELECT COUNT(*) FROM reading_session JOIN book ON book.book_id = reading_session.book_id WHERE username = '" + User.getUser().getUsername() + "' AND pages BETWEEN " + min + " AND " + max + ";";
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet res = preparedStatement.executeQuery();
@@ -101,27 +137,25 @@ public class UserDAO {
         return -1;
     }
 
-    // TODO: change to checking via session records
+    // definitely need to check this SQL query
     // returns the 5 authors the user has read the most of, and how many books per author
     public ArrayList<AuthorRecord> getTopAuthors() {
         ArrayList<AuthorRecord> authors = new ArrayList<>();
-        String query = "SELECT COUNT(*) AS count, author FROM user_to_books_read JOIN book ON book_id = book.id WHERE user_id = '" + User.getUser().getUsername() + "' GROUP BY author ORDER BY count DESC LIMIT 5;";
+        String query = "SELECT COUNT(*) AS count, author.name FROM reading_session LEFT JOIN book ON reading_session.book_id = book.book_id LEFT JOIN author_to_book ON author_to_book.book_id = book.book_id LEFT JOIN author ON author_to_book.author_id = author.author_id WHERE username = '" + User.getUser().getUsername() + "' GROUP BY author.name ORDER BY count DESC LIMIT 5;";
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();
             while(results.next()) {
-                authors.add(new AuthorRecord(results.getString("author"), results.getInt("count")));
+                authors.add(new AuthorRecord(results.getString("author.name"), results.getInt("count")));
             }
-        } catch(SQLException e) { System.out.println("Error querying top authors."); }
+        } catch(SQLException e) { System.out.println("Error querying top authors."); e.printStackTrace(); }
 
         return authors;
     }
 
-
-    // TODO: change to checking via session records
     // returns the genres the user has read, and the quantity of books per genre
     public ArrayList<GenreRecord> getCommonGenres() {
-        String query = "SELECT name, COUNT(*) AS count FROM user_to_books_read JOIN book ON user_to_books_read.book_id = book.id RIGHT JOIN book_to_genre ON book_to_genre.book_id = book.id LEFT JOIN genre ON genre_id = genre.id WHERE user_id = '" + User.getUser().getUsername() + "' GROUP BY name;";
+        String query = "SELECT name, COUNT(*) AS count FROM reading_session LEFT JOIN book ON reading_session.book_id = book.book_id RIGHT JOIN book_to_genre ON book_to_genre.book_id = book.book_id LEFT JOIN genre ON book_to_genre.genre_id = genre.genre_id WHERE username = '" + User.getUser().getUsername() + "' GROUP BY name;";
         ArrayList<GenreRecord> genres = new ArrayList<>();
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {

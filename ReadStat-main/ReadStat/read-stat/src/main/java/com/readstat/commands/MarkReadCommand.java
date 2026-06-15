@@ -5,14 +5,13 @@ import com.readstat.DAOs.UserDAO;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines the logic for how to mark/unmark a book as read
- * Revision Date: 7/21/2025
+ * Revision Date: 06/15/2026
  */
 
-// TODO: implement session records when tracking books
-public class TrackBookCommand implements Command {
+public class MarkReadCommand implements Command {
     public static boolean execute(int book_id) {
         UserDAO userDAO = new UserDAO();
         if(userDAO.userHasReadBook(book_id)) { userDAO.unTrackBookByID(book_id); return true; }
-        else { userDAO.trackBookByID(book_id); return false; }
+        else { userDAO.markBookAsRead(book_id); return false; }
     }
 }

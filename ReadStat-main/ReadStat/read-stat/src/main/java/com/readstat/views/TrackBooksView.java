@@ -18,7 +18,7 @@ import com.readstat.POJOs.Book;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines what the user sees when the book tracking page is open
- * Revision Date: 7/23/2025
+ * Revision Date: 06/15/2026
  */
 
 public class TrackBooksView extends View{
@@ -102,7 +102,7 @@ public class TrackBooksView extends View{
         track_buttons = new ArrayList<>();
 
         for(int i = 0; i < visible_books.size(); i++) {
-            if(userDAO.userHasReadBook(visible_books.get(i).ID())) { // the user has read the book, so the button option should be to untrack
+            if(userDAO.userHasReadBook(visible_books.get(i).getID())) { // the user has read the book, so the button option should be to untrack
                 track_buttons.add(new JButton("Untrack"));
                 track_buttons.get(i).setPreferredSize(new Dimension(85, 30));
             }
@@ -121,7 +121,7 @@ public class TrackBooksView extends View{
             book_row.setMaximumSize(new Dimension(350, 40)); // chatgpt suggested this line for fixing button size variation when the # of books are filtered
             book_row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            book_row.add(new JLabel(visible_books.get(i).title() + " - " + visible_books.get(i).author() + " - " + visible_books.get(i).pages() + " pages"), BorderLayout.WEST);
+            book_row.add(new JLabel(visible_books.get(i).getTitle() + " - " + visible_books.get(i).getAuthorsAsString() + " - " + visible_books.get(i).getPages() + " pages"), BorderLayout.WEST);
             book_row.add(Box.createRigidArea(new Dimension(10, 0)));
             book_row.add(track_buttons.get(i), BorderLayout.EAST);
             
