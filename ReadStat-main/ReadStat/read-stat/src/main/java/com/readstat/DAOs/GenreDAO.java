@@ -10,7 +10,7 @@ import com.readstat.model.DBConnection;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the genre database and translates data into an understandable java form
- * Revision Date: 7/15/2025
+ * Revision Date: 6/17/2026
  */
 
 public class GenreDAO {
@@ -19,15 +19,14 @@ public class GenreDAO {
     // returns all genres in the database
     public ArrayList<String> getAllGenres() {
         ArrayList<String> genres = new ArrayList<>();
-        String query = "SELECT name FROM genre;";
+        String query = "SELECT genre_name FROM genre;";
 
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();
             while(results.next()) {
-                genres.add(results.getString("name"));
+                genres.add(results.getString("genre_name"));
             }
-        } catch(SQLException e) { System.out.println("Failed to connect to MySQL database"); }
-
+        } catch(SQLException e) { System.out.println("Failed to get all genres"); e.printStackTrace(); }
         return genres;
     }
 

@@ -56,7 +56,7 @@ public class UserDAO {
             if(results.next()) {
                 return results.getInt("session_id");
             }
-        } catch(SQLException e) { System.out.println("Error getting read genres."); }
+        } catch(SQLException e) { System.out.println("Error checking if user is cur reading"); }
 
         return -1;
     }
@@ -155,7 +155,7 @@ public class UserDAO {
 
     // returns the genres the user has read, and the quantity of books per genre
     public ArrayList<GenreRecord> getCommonGenres() {
-        String query = "SELECT name, COUNT(*) AS count FROM reading_session LEFT JOIN book ON reading_session.book_id = book.book_id RIGHT JOIN book_to_genre ON book_to_genre.book_id = book.book_id LEFT JOIN genre ON book_to_genre.genre_id = genre.genre_id WHERE username = '" + User.getUser().getUsername() + "' GROUP BY name;";
+        String query = "SELECT genre_name, COUNT(*) AS count FROM reading_session LEFT JOIN book ON reading_session.book_id = book.book_id RIGHT JOIN book_to_genre ON book_to_genre.book_id = book.book_id WHERE username = '" + User.getUser().getUsername() + "' GROUP BY genre_name;";
         ArrayList<GenreRecord> genres = new ArrayList<>();
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
