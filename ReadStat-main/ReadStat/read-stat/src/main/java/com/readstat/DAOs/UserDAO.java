@@ -12,7 +12,7 @@ import com.readstat.model.DBConnection;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the User and user_to_books_read databases and translates data into an understandable java form
- * Revision Date: 06/15/2026
+ * Revision Date: 06/17/2026
  */
 
 public class UserDAO {
@@ -66,7 +66,7 @@ public class UserDAO {
 
         if(isCurReading(id) != -1) { return false; }
 
-        String query = "INSERT INTO reading_session (username, book_id, date_started) VALUES (" + User.getUser().getUsername() + ", " + id + ", CURRENT_TIMESTAMP;";
+        String query = "INSERT INTO reading_session (username, book_id, date_started) VALUES ('" + User.getUser().getUsername() + "', " + id + ", CURRENT_TIMESTAMP);";
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             int rows_affected = preparedStatement.executeUpdate();
             if(rows_affected == 1) { return true; }
@@ -94,7 +94,7 @@ public class UserDAO {
             try(PreparedStatement preparedStatement = con.prepareStatement(mark_read);) {
                 int rows_affected = preparedStatement.executeUpdate();
                 if(rows_affected == 1) { return true; }
-            } catch(SQLException e) { System.out.println("Failed to mark book as read.");}
+            } catch(SQLException e) { System.out.println("Failed to mark book as read."); e.printStackTrace(); }
         }
 
         return false;

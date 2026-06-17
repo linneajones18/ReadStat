@@ -4,7 +4,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import com.readstat.DAOs.BookDAO;
+import com.readstat.commands.MarkCurrentlyReadingCommand;
 import com.readstat.commands.MarkReadCommand;
+import com.readstat.commands.MarkUnReadCommand;
 import com.readstat.views.TrackBooksView;
 import com.readstat.views.ViewManager;
 
@@ -23,7 +25,7 @@ public class TrackBooksController {
         ViewManager.getInstance().registerView(view, view.getViewName());
 
         view.setGoToStatsListener(e -> handleGoToStats());
-        view.setGenreSearchListener(e -> handleSearch());
+        view.setGenreSearchListener(e -> handleGenreSearch());
 
         view.addComponentListener(new ComponentAdapter() {
             @Override
@@ -39,13 +41,25 @@ public class TrackBooksController {
     }
 
     public void handleTrackBook(int index) {
-        MarkReadCommand.execute(view.getVisibleBooks().get(index).getID());
-        view.switchButtonMode(index);
+        // check what the option was pressed
+
+        if(view.getSelectedTrackOption(index).equals("Read")) { 
+            MarkReadCommand.execute(view.getVisibleBooks().get(index).getID());
+        }
+
+        else if(view.getSelectedTrackOption(index).equals("Currently Reading")) {
+            MarkCurrentlyReadingCommand.execute(view.getVisibleBooks().get(index).getID());
+        }
+
+        else if(view.getSelectedTrackOption(index).equals("Unread")) {
+            MarkUnReadCommand.execute(view.getVisibleBooks().get(index).getID());
+        }
+
         view.refresh();
         refreshButtons();
     }
 
-    public void handleSearch() {
+    public void handleGenreSearch() {
         BookDAO bookDAO = new BookDAO();
         // when no genre is selected - show all books
         if(view.getSelectedGenre().equals("Select by genre")) { view.setVisibleBooks(bookDAO.getAllBooks()); }

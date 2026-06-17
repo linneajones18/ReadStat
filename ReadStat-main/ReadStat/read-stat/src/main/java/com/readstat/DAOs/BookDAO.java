@@ -1,6 +1,5 @@
 package com.readstat.DAOs;
 
-import com.readstat.POJOs.AuthorRecord;
 import com.readstat.POJOs.Book;
 import com.readstat.model.DBConnection;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the book and book_to_genre database and translates data into an understandable java form
- * Revision Date: 06/14/2026
+ * Revision Date: 06/17/2026
  */
 
 public class BookDAO {

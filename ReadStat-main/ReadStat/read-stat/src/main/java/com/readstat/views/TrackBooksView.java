@@ -18,12 +18,12 @@ import com.readstat.POJOs.Book;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines what the user sees when the book tracking page is open
- * Revision Date: 06/15/2026
+ * Revision Date: 06/17/2026
  */
 
 public class TrackBooksView extends View{
 
-    private ArrayList<JButton> track_buttons;
+    private ArrayList<JComboBox<String>> track_buttons;
     private ArrayList<Book> visible_books;
     private JButton go_to_stats_button;
     private JComboBox<String> select_genres;
@@ -39,7 +39,7 @@ public class TrackBooksView extends View{
         ArrayList<String> genres = new ArrayList<>(Arrays.asList("Select by genre"));
         genres.addAll(genreDAO.getAllGenres());
         select_genres = new JComboBox<>(genres.toArray(new String[0]));
-        
+
         go_to_stats_button = new JButton("Go to Statistics");
         visible_books = bookDAO.getAllBooks();
 
@@ -89,6 +89,7 @@ public class TrackBooksView extends View{
     public void setGenreSearchListener(ActionListener listener)         { select_genres.addActionListener(listener); }
     public ArrayList<Book> getVisibleBooks()                            { return visible_books; }
     public String getSelectedGenre()                                    { return (String) select_genres.getSelectedItem(); }
+    public String getSelectedTrackOption(int index)                     { return (String) track_buttons.get(index).getSelectedItem(); }
 
 
     public void setVisibleBooks(ArrayList<Book> books) { 
@@ -102,15 +103,20 @@ public class TrackBooksView extends View{
         track_buttons = new ArrayList<>();
 
         for(int i = 0; i < visible_books.size(); i++) {
-            if(userDAO.userHasReadBook(visible_books.get(i).getID())) { // the user has read the book, so the button option should be to untrack
-                track_buttons.add(new JButton("Untrack"));
-                track_buttons.get(i).setPreferredSize(new Dimension(85, 30));
+            if(userDAO.isCurReading(visible_books.get(i).getID()) != -1) {
+                String[] options = {"Unread", "Read"};
+                track_buttons.add(new JComboBox<>(options));
+            }
+            else if(userDAO.userHasReadBook(visible_books.get(i).getID())) { // the user has read the book, so the dropdown should have remove option
+                String[] options = {"Unread", "Read", "Currently Reading"};
+                track_buttons.add(new JComboBox<>(options));
             }
             else {
-                track_buttons.add(new JButton("Track"));
-                track_buttons.get(i).setPreferredSize(new Dimension(85, 30));
+                String[] options = {"Read", "Currently Reading"};
+                track_buttons.add(new JComboBox<>(options));
             }
-        }
+            track_buttons.get(i).setPreferredSize(new Dimension(85, 30));
+        }   
 
         // remove all track buttons
         button_panel.removeAll();
@@ -131,16 +137,5 @@ public class TrackBooksView extends View{
 
         button_panel.repaint();
         button_panel.revalidate();
-    }
-
-
-    // switches buttons between tracking and untracking
-    public void switchButtonMode(int index) {
-        if(track_buttons.get(index).getText() == "Untrack" ){
-            track_buttons.get(index).setText("Track");
-        }
-        else {
-            track_buttons.get(index).setText("Untrack");
-        }
     }
 }
