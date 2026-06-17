@@ -1,4 +1,4 @@
-# Linnea Jones
+# ReadStat
 
 Java Version: 24.0.1
 
