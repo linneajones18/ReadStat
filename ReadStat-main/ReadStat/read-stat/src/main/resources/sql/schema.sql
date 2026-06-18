@@ -25,7 +25,7 @@ USE `read_stat` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`book` (
   `book_id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(100) NULL DEFAULT NULL,
+  `title` VARCHAR(250) NULL DEFAULT NULL,
   `pages` INT NULL DEFAULT NULL,
   `description` VARCHAR(250) NULL,
   PRIMARY KEY (`book_id`),
@@ -88,7 +88,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`author` (
   `author_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL,
+  `name` VARCHAR(100) NULL,
   PRIMARY KEY (`author_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4

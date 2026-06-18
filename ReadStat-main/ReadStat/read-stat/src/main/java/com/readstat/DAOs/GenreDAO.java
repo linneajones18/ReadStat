@@ -40,7 +40,7 @@ public class GenreDAO {
             while(results.next()) {
                 genres.add(results.getString("name"));
             }
-        } catch(SQLException e) { System.out.println("Failed to connect to MySQL database"); }
+        } catch(SQLException e) { System.out.println("Failed to get genres by book ID"); }
 
         return genres;
     }

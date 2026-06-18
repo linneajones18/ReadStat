@@ -18,7 +18,7 @@ import com.readstat.POJOs.Book;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines what the user sees when the book tracking page is open
- * Revision Date: 06/17/2026
+ * Revision Date: 06/18/2026
  */
 
 public class TrackBooksView extends View{
@@ -41,7 +41,7 @@ public class TrackBooksView extends View{
         select_genres = new JComboBox<>(genres.toArray(new String[0]));
 
         go_to_stats_button = new JButton("Go to Statistics");
-        visible_books = bookDAO.getAllBooks();
+        visible_books = bookDAO.getNumBooks(50);
 
         // set to blank buttons
         button_panel = new JPanel();

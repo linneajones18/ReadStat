@@ -8,6 +8,8 @@ import java.util.ArrayList;
  * Revision Date: 06/15/2026
  */
 
+// TODO: Add pub year and cover url fields - and fix the things that use the fields in other places
+
 public class Book {
     public int id;
     public String title;
