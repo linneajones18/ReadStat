@@ -4,13 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.readstat.model.DBConnection;
 
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the author and book_to_author databases and translates data into an understandable java form
- * Revision Date: 06/18/2026
+ * Revision Date: 06/20/2026
  */
 
 public class AuthorDAO {
@@ -55,7 +56,20 @@ public class AuthorDAO {
         return id;
     }
 
-    public boolean addAuthorBookRelationship(int book_id, int author_id) {
+    public ArrayList<String> getAuthorsByBookID(String id) {
+        String author_query = "SELECT name FROM author RIGHT JOIN author_to_book ON author.author_id = author_to_book.author_id WHERE book_id = " + id + ";";
+        ArrayList<String> authors = new ArrayList<>();
+        try(PreparedStatement preparedAuthorStatement = con.prepareStatement(author_query)) {
+            ResultSet results = preparedAuthorStatement.executeQuery();
+            while(results.next()) {
+                authors.add(results.getString("name"));
+            }
+        } catch(SQLException e) { System.out.println("Failed to access authors of books"); e.printStackTrace(); }
+
+        return authors;
+    }
+
+    public boolean addAuthorBookRelationship(String book_id, int author_id) {
         String query = "INSERT INTO author_to_book (author_id, book_id) VALUES (" + author_id + ", " + book_id + ");";
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             int rows_affected = preparedStatement.executeUpdate();

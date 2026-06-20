@@ -5,10 +5,10 @@ import com.readstat.POJOs.User;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines the logic for how to attempt to logout a user
- * Revision Date: 7/15/2025
+ * Revision Date: 6/20/26
  */
 
-public class LogoutCommand {
+public abstract class LogoutCommand {
     public static boolean execute() {
         if(User.getUser().getUsername() != null) {
             User.getUser().logout();

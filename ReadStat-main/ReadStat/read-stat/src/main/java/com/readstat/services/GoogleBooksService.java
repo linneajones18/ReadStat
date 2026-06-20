@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.readstat.DAOs.GenreDAO;
 import com.readstat.POJOs.Book;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -20,15 +21,16 @@ import io.github.cdimascio.dotenv.Dotenv;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the Google Books API (GBAPI) to retrieve book information and translates it into a Java understandable form
- * Revision Date: 06/19/2026
+ * Revision Date: 06/20/2026
  */
 
-public class GoogleBooksService {
+// TODO: figure out why cover_url and isFiction seem like they're ALWAYs null
+
+public abstract class GoogleBooksService {
 
     private static final String API_key = Dotenv.load().get("GOOGLE_BOOKS_API_KEY");
     private static final String base_URL = "https://www.googleapis.com/books/v1/volumes";
 
-    // TODO: add calls to GBAPI to add CSV unknown info from GBAPI - where logical
     // TODO: For adding books by searching by title, need to verify it's the correct book because Google will return more than one
     // TODO: When adding book, verify it's not already in the DB
 
@@ -46,31 +48,52 @@ public class GoogleBooksService {
         return null;
     }
 
+    // public static isFiction(Book)
+    public static Boolean isFiction(JsonNode categories) {
+        // parse categories to see if fiction is in it
+        if(categories != null) {
+            for(JsonNode cat : categories) {
+                if(cat.asText().equals("Fiction") || cat.asText().equals("fiction")) {
+                    return true;
+                }
+                if(cat.asText().equals("Nonfiction") || cat.asText().equals("nonfiction")) {
+                    return false;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static Book parseJsonToBook(JsonNode volume) {
         // parse authors
         ArrayList<String> authors = new ArrayList<>();
-        if(volume.get("authors") != null) {
-            for(JsonNode author : volume.get("authors")) {
+
+        JsonNode volumeInfo = volume.get("volumeInfo");
+
+        if((volumeInfo != null) && (volumeInfo.get("authors") != null)) {
+            for(JsonNode author : volumeInfo.get("authors")) {
                 authors.add(author.asText());
             }
         }
 
-        // parse genres
         ArrayList<String> genres = new ArrayList<>();
-        if(volume.get("categories") != null) {
-            for(JsonNode genre : volume.get("categories")) {
+        if((volumeInfo != null) && (volumeInfo.get("categories")) != null) {
+            for(JsonNode genre : volumeInfo.get("categories")) {
                 genres.add(genre.asText());
             }
         }
+        GenreDAO genreDAO = new GenreDAO();
+        genres = genreDAO.parseGenres(genres);
 
-        String id = (volume.get("id") != null)                      ? volume.get("id").asText() : null;
-        String title = (volume.get("title") != null)                ? volume.get("title").asText() : null;
-        int pages = (volume.get("pageCount") != null)               ? volume.get("pageCount").asInt() : -1;
-        String description = (volume.get("description") != null)    ? volume.get("description").asText() : null;
-        String cover_url = (volume.get("thumbnail") != null)        ? volume.get("thumbnail").asText() : null;
-
+        String id = (volume.get("id") != null)                                                                                              ? volume.get("id").asText() : null;
+        String title = ((volumeInfo != null) && (volumeInfo.get("title")) != null)                                                          ? volumeInfo.get("title").asText() : null;
+        int pages = ((volumeInfo != null) && (volumeInfo.get("pageCount") != null))                                                         ? volumeInfo.get("pageCount").asInt() : -1;
+        String description = ((volumeInfo != null) && (volumeInfo.get("description") != null))                                              ? volumeInfo.get("description").asText() : null;
+        String cover_url = ((volume.get("imageLinks") != null) && (volume.get("imageLinks").get("thumbnail") != null) ) ? volume.get("imageLinks").get("thumbnail").asText() : null;
+        Boolean isFiction = ((volumeInfo != null) && (volumeInfo.get("categories") != null))                                                ? isFiction(volume.get("categories")) : null;
         // create book POJO from parsed JSON
-        return new Book(id, title, pages, description, cover_url, authors, genres);
+        return new Book(id, title, pages, description, cover_url, isFiction, authors, genres);
     }
 
     // sends a request to GBAPI to get books by title
@@ -85,8 +108,10 @@ public class GoogleBooksService {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.body());
-            for( JsonNode volume : root.get("items")) {
-                books.add(parseJsonToBook(volume));
+            if(root.get("items") != null) {
+                for( JsonNode volume : root.get("items")) {
+                    books.add(parseJsonToBook(volume));
+                }
             }
         } catch(JsonMappingException e) { System.out.println("Failed to map JSON to POJO."); e.printStackTrace(); }
         catch(JsonProcessingException e) { System.out.println("Failed to process JSON book"); e.printStackTrace(); }

@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `read_stat`.`book` (
   `pages` INT NULL DEFAULT NULL,
   `description` VARCHAR(5000) NULL,
   `cover_url` VARCHAR(100) NULL,
+  `isFiction` BOOLEAN NULL,
   PRIMARY KEY (`book_id`),
   UNIQUE INDEX `book_id_UNIQUE` (`book_id` ASC) VISIBLE)
 ENGINE = InnoDB

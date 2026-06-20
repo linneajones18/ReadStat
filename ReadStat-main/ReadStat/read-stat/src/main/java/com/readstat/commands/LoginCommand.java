@@ -6,10 +6,10 @@ import com.readstat.POJOs.User;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines the logic for how to attempt to login a user
- * Revision Date: 7/15/2025
+ * Revision Date: 6/20/26
  */
 
-public class LoginCommand implements Command {
+public abstract class LoginCommand implements Command {
     public static boolean execute(String username, String password) {
         UserDAO userDAO = new UserDAO();
         if(userDAO.verifyLogin(username, password)) { // if the user exists

@@ -6,10 +6,10 @@ import com.readstat.POJOs.User;
 /*
  * Author:        Linnea Jones
  * Purpose:       Defines the logic for how to attempt to sign up a user
- * Revision Date: 7/12/2025
+ * Revision Date: 6/20/26
  */
 
-public class SignupCommand implements Command {
+public abstract class SignupCommand implements Command {
     public static boolean execute(String username, String password) {
         UserDAO userDAO = new UserDAO();
         if(userDAO.createUser(username, password)) {
