@@ -10,7 +10,7 @@ import com.readstat.model.DBConnection;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the genre database and translates data into an understandable java form
- * Revision Date: 6/17/2026
+ * Revision Date: 6/19/2026
  */
 
 public class GenreDAO {
@@ -43,5 +43,11 @@ public class GenreDAO {
         } catch(SQLException e) { System.out.println("Failed to get genres by book ID"); }
 
         return genres;
+    }
+
+    public String[] parseGenres(String[] genres) {
+        // TODO: Implement this function which takes an array of genres and returns the matches that exist in the DB
+
+        return null;
     }
 }

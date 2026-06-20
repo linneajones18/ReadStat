@@ -17,19 +17,20 @@ import java.util.Arrays;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the book and book_to_genre database and translates data into an understandable java form
- * Revision Date: 06/18/2026
+ * Revision Date: 06/19/2026
  */
 
 public class BookDAO {
     private Connection con = DBConnection.getInstance().getConnection();
 
+    // TODO: update id field since it's not auto-increment anymore
     public boolean addBookToDB(String title, String pages, String[] authors, String description, ArrayList<String> genres) {
         title = title.replace("\"", "''");
         String book_query = "INSERT INTO book (title, pages, description) VALUES (\"" + title + "\", " + pages + ", " + description + ");";
         try(PreparedStatement preparedStatement = con.prepareStatement(book_query)) {
             int rows_affected = preparedStatement.executeUpdate();
             if(rows_affected != 1) { return false; }
-        } catch(SQLException e) { System.out.println("Failed to insert book." + book_query); e.printStackTrace(); System.exit(-1); return false; }
+        } catch(SQLException e) { System.out.println("Failed to insert book."); e.printStackTrace(); System.exit(-1); return false; }
 
         // get the id of that book
         String book_id_query = "SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1;";
@@ -87,14 +88,14 @@ public class BookDAO {
     // retrieves num relatively random books from the DB
     public ArrayList<Book> getNumBooks(int num) {
         ArrayList<Book> books = new ArrayList<>();
-        String query = "SELECT book_id, title, pages, description FROM book LIMIT " + num + ";";
+        String query = "SELECT book_id, title, pages, description, cover_url FROM book LIMIT " + num + ";";
 
         try(PreparedStatement preparedBookStatement = con.prepareStatement(query)) {
             ResultSet results = preparedBookStatement.executeQuery();
             while(results.next()) {
-                int id = results.getInt("book_id");
+                String id = results.getString("book_id");
                 
-                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), getAuthorsByBookID(id)));
+                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), results.getString("cover_url"), getAuthorsByBookID(id), getGenresByBookID(id)));
             }
         } catch(SQLException e) { System.out.println("Failed to access books"); e.printStackTrace(); }
 
@@ -106,22 +107,22 @@ public class BookDAO {
     // gets all books from the database in an array
     public ArrayList<Book> getAllBooks() {
         ArrayList<Book> books = new ArrayList<>();
-        String query = "SELECT book_id, title, pages, description FROM book;";
+        String query = "SELECT book_id, title, pages, description, cover_url FROM book;";
 
         try(PreparedStatement preparedBookStatement = con.prepareStatement(query)) {
             ResultSet results = preparedBookStatement.executeQuery();
             while(results.next()) {
-                int id = results.getInt("book_id");
+                String id = results.getString("book_id");
                 
-                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), getAuthorsByBookID(id)));
+                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), results.getString("cover_url"), getAuthorsByBookID(id), getGenresByBookID(id)));
             }
         } catch(SQLException e) { System.out.println("Failed to access books"); e.printStackTrace(); }
 
         return books;
     }
 
-    public ArrayList<String> getAuthorsByBookID(int id) {
-        String author_query = "SELECT author.author_id, name FROM author RIGHT JOIN author_to_book ON author.author_id = author_to_book.author_id WHERE book_id = " + id + ";";
+    public ArrayList<String> getAuthorsByBookID(String id) {
+        String author_query = "SELECT name FROM author RIGHT JOIN author_to_book ON author.author_id = author_to_book.author_id WHERE book_id = " + id + ";";
         ArrayList<String> authors = new ArrayList<>();
         try(PreparedStatement preparedAuthorStatement = con.prepareStatement(author_query)) {
             ResultSet results = preparedAuthorStatement.executeQuery();
@@ -136,13 +137,13 @@ public class BookDAO {
     // gets all books by a specific genre in the database in an array
     public ArrayList<Book> getBooksByGenre(String genre) {
         ArrayList<Book> books = new ArrayList<>();
-        String query = "SELECT book.book_id, title, pages, description FROM book RIGHT JOIN book_to_genre ON book.book_id = book_to_genre.book_id WHERE genre_name = '" + genre + "';";
+        String query = "SELECT book.book_id, title, pages, description, cover_url FROM book RIGHT JOIN book_to_genre ON book.book_id = book_to_genre.book_id WHERE genre_name = '" + genre + "';";
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();
             while(results.next()) {
-                int id = results.getInt("book_id");
-                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), getAuthorsByBookID(id)));
+                String id = results.getString("book_id");
+                books.add(new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), results.getString("cover_url"), getAuthorsByBookID(id), getGenresByBookID(id)));
             }
         } catch(SQLException e) { System.out.println("Failed to get books by genre"); e.printStackTrace(); }
 
@@ -150,16 +151,29 @@ public class BookDAO {
     }
 
     // gets one book by a given id from the database
-    public Book getBookByID(int id) {
+    public Book getBookByID(String id) {
         String query = "SELECT * FROM book WHERE book_id = " + id + ";";
 
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();
             if(results.next()) {
-                return new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), getAuthorsByBookID(id));
+                return new Book(id, results.getString("title"), results.getInt("pages"), results.getString("description"), results.getString("cover_url"), getAuthorsByBookID(id), getGenresByBookID(id));
             }        
         } catch(SQLException e) { System.out.println("Failed to get book by id"); e.printStackTrace(); }
 
         return null;
+    }
+
+    public ArrayList<String> getGenresByBookID(String id) {
+        String query = "SELECT genre_name FROM book RIGHT JOIN book_to_genre ON book.book_id = book_to_genre.book_id WHERE book.book_id = '" + id + "'';";
+        ArrayList<String> genres = new ArrayList<>();
+        try(PreparedStatement preparedAuthorStatement = con.prepareStatement(query)) {
+            ResultSet results = preparedAuthorStatement.executeQuery();
+            while(results.next()) {
+                genres.add(results.getString("genre_name"));
+            }
+        } catch(SQLException e) { System.out.println("Failed to access genres of book"); e.printStackTrace(); }
+
+        return genres;
     }
 }

@@ -24,10 +24,11 @@ USE `read_stat` ;
 -- Table `read_stat`.`book`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`book` (
-  `book_id` INT NOT NULL AUTO_INCREMENT,
+  `book_id` VARCHAR(50) NOT NULL ,
   `title` VARCHAR(250) NULL DEFAULT NULL,
   `pages` INT NULL DEFAULT NULL,
-  `description` VARCHAR(250) NULL,
+  `description` VARCHAR(5000) NULL,
+  `cover_url` VARCHAR(100) NULL,
   PRIMARY KEY (`book_id`),
   UNIQUE INDEX `book_id_UNIQUE` (`book_id` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -64,7 +65,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`reading_session` (
   `username` VARCHAR(50) NOT NULL,
-  `book_id` INT NOT NULL,
+  `book_id` VARCHAR(50) NOT NULL,
   `session_id` INT NOT NULL AUTO_INCREMENT,
   `date_started` TIMESTAMP NULL,
   `date_finished` TIMESTAMP NULL,
@@ -100,7 +101,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`author_to_book` (
   `author_id` INT NOT NULL,
-  `book_id` INT NOT NULL,
+  `book_id` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`author_id`, `book_id`),
   INDEX `fk_author_has_book_book1_idx` (`book_id` ASC) VISIBLE,
   INDEX `fk_author_has_book_author1_idx` (`author_id` ASC) VISIBLE,
@@ -123,7 +124,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `read_stat`.`book_to_genre`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `read_stat`.`book_to_genre` (
-  `book_id` INT NOT NULL,
+  `book_id` VARCHAR(50) NOT NULL,
   `genre_name` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`book_id`, `genre_name`),
   INDEX `fk_book_has_genre_genre1_idx` (`genre_name` ASC) VISIBLE,

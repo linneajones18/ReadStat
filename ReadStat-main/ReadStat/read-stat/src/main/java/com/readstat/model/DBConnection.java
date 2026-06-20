@@ -9,19 +9,17 @@ import io.github.cdimascio.dotenv.Dotenv;
 /*
  * Author:        Linnea Jones
  * Purpose:       Sets up and maintains the application's connection to the database
- * Revision Date: 06.14.2026
+ * Revision Date: 6/19/26
  */
 
 public class DBConnection {
     private static final DBConnection instance = new DBConnection();
     private Connection con;
-    Dotenv dotenv = Dotenv.load();
-
 
     // replace this info with machine specific MySQL information
-    private final String url = dotenv.get("DATABASE_URL");
+    private final String url = Dotenv.load().get("DATABASE_URL");
     private final String user = "root";
-    private final String password = dotenv.get("DATABASE_PASSWORD");
+    private final String password = Dotenv.load().get("DATABASE_PASSWORD");
 
 
     // got pieces of connection setup code from:

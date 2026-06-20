@@ -12,7 +12,7 @@ import com.readstat.model.DBConnection;
 /*
  * Author:        Linnea Jones
  * Purpose:       Communicates with the User and user_to_books_read databases and translates data into an understandable java form
- * Revision Date: 06/17/2026
+ * Revision Date: 06/19/2026
  */
 
 public class UserDAO {
@@ -48,8 +48,8 @@ public class UserDAO {
     }
 
     // checks if book is marked as currently reading and returns session id, returns -1 if not
-    public int isCurReading(int id) {
-        String check_Reading = "SELECT session_id FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + id + " AND date_finished IS NULL;";
+    public int isCurReading(String id) {
+        String check_Reading = "SELECT session_id FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = '" + id + "' AND date_finished IS NULL;";
 
         try(PreparedStatement preparedStatement = con.prepareStatement(check_Reading)) {
             ResultSet results = preparedStatement.executeQuery();
@@ -62,7 +62,7 @@ public class UserDAO {
     }
 
     // marks a book as currently reading by creating a reading_session row with a start time but no end time in the DB
-    public boolean markBookAsCurReading(int id) {
+    public boolean markBookAsCurReading(String id) {
 
         if(isCurReading(id) != -1) { return false; }
 
@@ -75,7 +75,7 @@ public class UserDAO {
         return false;
     }
 
-    public boolean markBookAsRead(int id) {
+    public boolean markBookAsRead(String id) {
 
         int session_id = isCurReading(id);
 
@@ -101,8 +101,8 @@ public class UserDAO {
     }
 
     // marks a book as unread by the user by removing every read record from the databse
-    public boolean unTrackBookByID(int id) {
-        String query = "DELETE FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + id + ";";
+    public boolean unTrackBookByID(String id) {
+        String query = "DELETE FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = '" + id + "';";
 
         try(PreparedStatement preparedStatement = con.prepareStatement(query);) {
             int rows_affected = preparedStatement.executeUpdate();
@@ -113,8 +113,8 @@ public class UserDAO {
     }
 
     // verifies whether a record exists in the database of the user reading a given book by id
-    public boolean userHasReadBook(int book_id) {
-        String query = "SELECT COUNT(*) AS count FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = " + book_id + ";";
+    public boolean userHasReadBook(String book_id) {
+        String query = "SELECT COUNT(*) AS count FROM reading_session WHERE username = '" + User.getUser().getUsername() + "' AND book_id = '" + book_id + "';";
         
         try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet results = preparedStatement.executeQuery();

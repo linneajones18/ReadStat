@@ -2,13 +2,14 @@ package com.readstat;
 
 import com.readstat.DAOs.BookDAO;
 import com.readstat.controllers.*;
+import com.readstat.services.GoogleBooksService;
 import com.readstat.views.ViewManager;
 
 /*
  * Author:        Linnea Jones
  * Class:         CSCI 4448
- * Purpose:       Consolidates the controllers to start together and run the app
- * Revision Date: 6/18/26
+ * Purpose:       Consolidates the controllers to start together and run the app as well as importing the DB book data
+ * Revision Date: 6/19/26
  */
 
 public class App 
@@ -29,5 +30,7 @@ public class App
     public static void main( String[] args ) {
         App app = new App();
         app.start();
+        // GoogleBooksService.getBookByTitle("Dune");
+
     }
 }
